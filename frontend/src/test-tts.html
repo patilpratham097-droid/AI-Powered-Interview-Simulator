@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Text-to-Speech</title>
+</head>
+<body>
+    <h1>Test Browser Text-to-Speech</h1>
+    <button onclick="testTTS()">Test Speech</button>
+    <button onclick="listVoices()">List Voices</button>
+    <div id="output"></div>
+
+    <script>
+        function log(message) {
+            document.getElementById('output').innerHTML += '<p>' + message + '</p>';
+            console.log(message);
+        }
+
+        function testTTS() {
+            log('Testing TTS...');
+            
+            if (!('speechSynthesis' in window)) {
+                log('❌ Speech synthesis not supported');
+                return;
+            }
+
+            log('✅ Speech synthesis supported');
+            
+            const utterance = new SpeechSynthesisUtterance('Hello, this is a test of the speech synthesis system.');
+            
+            utterance.onstart = () => log('🎤 Speech started');
+            utterance.onend = () => log('✅ Speech ended');
+            utterance.onerror = (event) => log('❌ Speech error: ' + event.error);
+            
+            log('🔊 Starting speech...');
+            speechSynthesis.speak(utterance);
+        }
+
+        function listVoices() {
+            log('Available voices:');
+            const voices = speechSynthesis.getVoices();
+            voices.forEach((voice, index) => {
+                log(`${index}: ${voice.name} (${voice.lang}) - ${voice.default ? 'DEFAULT' : ''}`);
+            });
+        }
+
+        // Load voices when page loads
+        window.onload = () => {
+            log('Page loaded, checking speech synthesis...');
+            if ('speechSynthesis' in window) {
+                log('✅ Speech synthesis available');
+                listVoices();
+            } else {
+                log('❌ Speech synthesis not available');
+            }
+        };
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
